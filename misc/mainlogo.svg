@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0beta2 (2b71d25, 2019-12-03)"
+   sodipodi:docname="mainlogo.svg">
+  <defs
+     id="defs2">
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lstart"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path849"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:none;fill-opacity:1"
+         transform="scale(0.8) translate(12.5,0)" />
+    </marker>
+    <rect
+       x="46.113095"
+       y="69.547619"
+       width="218.47024"
+       height="49.136905"
+       id="rect18" />
+    <rect
+       x="27.214286"
+       y="65.011905"
+       width="241.90476"
+       height="77.863096"
+       id="rect12" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="428.40204"
+     inkscape:cy="438.57143"
+     inkscape:document-units="mm"
+     inkscape:current-layer="g1520"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:window-width="1600"
+     inkscape:window-height="880"
+     inkscape:window-x="0"
+     inkscape:window-y="23"
+     inkscape:window-maximized="0"
+     inkscape:snap-text-baseline="true" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       xml:space="preserve"
+       id="text16"
+       style="font-weight:bold;font-size:25.39999999999999858px;line-height:1.25;font-family:'Arial Rounded MT';-inkscape-font-specification:'Arial Rounded MT Bold Normal';white-space:pre;shape-inside:url(#rect18);" />
+    <rect
+       y="40.285423"
+       x="134.68158"
+       height="9.0095148"
+       width="0"
+       id="rect1325-9"
+       style="fill:none;fill-opacity:1;stroke:#c80000;stroke-width:1.34298;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <g
+       id="g1520"
+       inkscape:transform-center-x="-11.339286"
+       inkscape:transform-center-y="7.5595238"
+       style="display:inline">
+      <text
+         inkscape:export-ydpi="96"
+         inkscape:export-xdpi="96"
+         transform="translate(-40.065476,25.702381)"
+         y="0"
+         x="105.54394"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:47.62500000000000000px;line-height:1.25;font-family:'Arial Rounded MT';-inkscape-font-specification:'Arial Rounded MT Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;letter-spacing:0px;white-space:pre;shape-inside:url(#rect12);"
+         id="text10"
+         xml:space="preserve"><tspan
+           sodipodi:role="line"
+           x="49.470181"
+           y="108.46145"><tspan
+             style="letter-spacing:-1.32292px;fill:#ffffff">OutC</tspan><tspan
+             dx="-1.3229218 0 -0.0026534593"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Arial Rounded MT';-inkscape-font-specification:'Arial Rounded MT Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;letter-spacing:0.00264583px;word-spacing:-0.00264583px;text-anchor:middle;fill:#ffffff">  D</tspan></tspan></text>
+      <g
+         inkscape:export-ydpi="96"
+         inkscape:export-xdpi="96"
+         id="g1509">
+        <circle
+           id="path22"
+           cx="151.56847"
+           cy="116.79464"
+           r="16.252975"
+           style="fill:none;fill-opacity:1;stroke:#c80000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+        <rect
+           style="fill:none;fill-opacity:1;stroke:#c80000;stroke-width:1.34298;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect1325"
+           width="1.0000553"
+           height="8.6315374"
+           x="151.06842"
+           y="97.626244" />
+        <rect
+           y="127.29554"
+           x="151.06842"
+           height="8.6315374"
+           width="1.0000553"
+           id="rect1325-5"
+           style="fill:none;fill-opacity:1;stroke:#c80000;stroke-width:1.34298;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+        <rect
+           y="132.81079"
+           x="-116.63845"
+           height="8.6315374"
+           width="1.0000553"
+           id="rect1325-1"
+           style="fill:none;fill-opacity:1;stroke:#c80000;stroke-width:1.34298;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           transform="rotate(-89.630046)" />
+        <rect
+           transform="rotate(-89.630046)"
+           style="fill:none;fill-opacity:1;stroke:#c80000;stroke-width:1.34298;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect1325-1-6"
+           width="1.0000553"
+           height="8.6315374"
+           x="-116.50374"
+           y="162.30617" />
+      </g>
+    </g>
+  </g>
+</svg>
