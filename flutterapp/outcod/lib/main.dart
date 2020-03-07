@@ -13,7 +13,7 @@ Widget firstTimeUser = Container(
       Expanded(
         /*1*/
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          //crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             /*2*/
             Container(
@@ -24,6 +24,7 @@ Widget firstTimeUser = Container(
                 ),
               ),
             ),
+            Image.asset('resources/whitelogonobg.png'),
           ],
         ),
       ),
@@ -39,6 +40,8 @@ Widget firstTimeUser = Container(
     ],
   ),
 );
+
+
 
 class MyApp extends StatelessWidget {
   @override
