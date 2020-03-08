@@ -1,13 +1,22 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertestapp/LoadoutForm.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'loadoutInfo.dart';
+import 'EnterCallsign.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(MyApp());
+}
+
+
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'OutCOD',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -19,12 +28,19 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         primarySwatch: Colors.blueGrey,
+        canvasColor: Color(0xff555555),
         fontFamily: 'Bebas Neue',
+        buttonTheme: ButtonThemeData(
+          buttonColor: Color(0xff666680),
+          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blueGrey),
+        ),
         textTheme: TextTheme(
           body1: TextStyle(fontFamily: 'Bebas Neue', color: Color(0xffffffff)),
-          body2: TextStyle(fontFamily: 'Bebas Neue', color: Color(0xff888888)),
-          display1: TextStyle(fontFamily: 'Bebas Neue', color: Color(0xffffffff), fontSize: 20),
-          display2: TextStyle(fontFamily: 'Bebas Neue', color: Color(0xff888888), fontSize: 16),
+          body2: TextStyle(fontFamily: 'Bebas Neue', color: Color(0xffaaaaaa)),
+          display1: TextStyle(fontFamily: 'Bebas Neue', color: Color(0xffffffff), fontSize: 26),
+          display2: TextStyle(fontFamily: 'Bebas Neue', color: Color(0xffaaaaaa), fontSize: 20),
+          display3: TextStyle(fontFamily: 'Bebas Neue', color: Color(0xffffffff), fontSize: 22),
+          headline: TextStyle(fontFamily: 'Bebas Neue', color: Color(0xffffffff), fontSize: 48),
         )
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
@@ -50,71 +66,252 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
 
-  void _incrementCounter() {
+
+class _MyHomePageState extends State<MyHomePage> {
+  // Vars go here?
+  String callsign = "";
+  List cardRole = new List();
+  List cardText = new List();
+  int numCards = 2;
+
+
+  // Funcs go here?
+  @override
+  @mustCallSuper
+  void initState() {
+    super.initState();
+
+    cardRole.add(cardRoles.newCard);
+    cardRole.add(cardRoles.deleteAll);
+    cardText.add("Add New Loadout");
+    cardText.add("Remove All Loadouts");
+
+    loadData();
+
+    setState(() {    });
+  }
+
+  void loadData() async {
+    SharedPreferences data = await SharedPreferences.getInstance();
+    if (data.containsKey('callsign')) {
+      callsign = data.getString('callsign');
+    } else {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => EnterCallsign()));
+    }
+
+    int i = 0;
+    while(data.containsKey("loadoutName$i")) {
+      String name = data.getString('loadoutName$i');
+      cardRoles role = cardRoles.values[data.getInt('loadoutRole$i')];
+      newLoadout(role, name);
+      i++;
+    }
+
+    numCards = i + 2;
+
+    setState(() {});
+  }
+
+  void updateLoadout(cardRoles role, String loadoutName, int index) {
+    cardRole[index] = role;
+    cardText[index] = loadoutName;
+  }
+
+  void newLoadout(cardRoles role, String loadoutName) {
+    cardRole.insert(numCards - 2, role);
+    cardText.insert(numCards - 2, loadoutName);
+    numCards++;
+  }
+
+  void _showDelAllDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Warning!"),
+          content: new Text("Are you sure you want to remove all loadouts?"),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Yes"),
+              onPressed: () { removeAllCards();
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => EnterCallsign())); },
+            ),
+            new FlatButton(
+              child: new Text("Cancel"),
+              onPressed: () { Navigator.of(context).pop(); },
+            ),
+          ],
+        );
+      }
+    );
+  }
+
+  void removeAllCards() async {
+    while (cardRole.length > 2) {
+      cardRole.removeAt(0);
+      cardText.removeAt(0);
+    }
+
+    SharedPreferences data = await SharedPreferences.getInstance();
+    for (int i = 0; i < numCards - 2; i++) {
+      if (data.containsKey("loadoutName$i")) {
+        data.remove("loadoutName$i");
+        data.remove("loadoutPrim$i");
+        data.remove("loadoutSec$i");
+        data.remove("loadoutOther$i");
+        data.remove("loadoutRole$i");
+      }
+    }
+
+    data.remove('callsign');
+
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      numCards = 2;
     });
   }
 
+  void tappedCard(int index) async {
+    if (index == numCards - 1) {
+      _showDelAllDialog();
+    } else if (index == numCards - 2) {
+      //go to card form empty
+      List result = await Navigator.push(context, MaterialPageRoute(builder: (context) => LoadoutForm(index, isNew: true)));
+      if (result.length > 0 && result[0]) {
+        newLoadout(result[1], result[2]);
+      }
+      setState(() {});
+    } else {
+      // go to card form filled out
+      List result = await Navigator.push(context, MaterialPageRoute(builder: (context) => LoadoutForm(index, isNew: false)));
+      if (result.length > 0 && result[0]) {
+        updateLoadout(result[1], result[2], index);
+      }
+    }
+  }
+
+  Widget _buildCarousel(BuildContext context, int carouselIndex) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        SizedBox(
+          height: MediaQuery.of(context).size.height * .50,
+          child: PageView.builder(
+            // store this controller in a State to save the carousel scroll position
+            itemCount: numCards,
+            controller: PageController(viewportFraction: 0.8),
+            itemBuilder: (BuildContext context, int itemIndex) {
+              String imageAsset = "";
+              switch (cardRole[itemIndex]) {
+                case cardRoles.empty:
+                  imageAsset = 'assets/graphics/none.png';
+                  break;
+                case cardRoles.newCard:
+                  imageAsset = 'assets/graphics/newcard.png';
+                  break;
+                case cardRoles.deleteAll:
+                  imageAsset = 'assets/graphics/deletecards.png';
+                  break;
+                case cardRoles.rifleman:
+                  imageAsset = 'assets/graphics/rifleman.png';
+                  break;
+                case cardRoles.specialist:
+                  imageAsset = 'assets/graphics/specialist.png';
+                  break;
+                case cardRoles.medic:
+                  imageAsset = 'assets/graphics/medic.png';
+                  break;
+                case cardRoles.sniper:
+                  imageAsset = 'assets/graphics/sniper.png';
+                  break;
+              }
+              return _buildCarouselItem(context, carouselIndex, itemIndex, imageAsset, cardText[itemIndex]);
+            },
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildCarouselItem(BuildContext context, int carouselIndex, int itemIndex, String imageAsset, String dispText) {
+    return Scaffold (
+      backgroundColor: const Color(0xff3b3838),
+      body: GestureDetector (
+        onTap: () { tappedCard(itemIndex); },
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          child: Container(
+            width: MediaQuery.of(context).size.width * .70,
+            decoration: BoxDecoration(
+              color: Color(0xd06a6a6a),
+              borderRadius: BorderRadius.all(Radius.circular(4.0)),
+            ),
+            child: Column (
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Expanded (
+                  flex: 66,
+                  child: Padding(
+                    padding: EdgeInsets.all(50.0),
+                    child: Image.asset(imageAsset),
+                  )
+                ),
+                Expanded (
+                  flex: 33,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        dispText,
+                        style: Theme.of(context).textTheme.display1,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       backgroundColor: const Color(0xff3b3838),
-//      appBar: AppBar(
-//        // Here we take the value from the MyHomePage object that was created by
-//        // the App.build method, and use it to set our appbar title.
-//        title: Text(widget.title),
-//      ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Text(
-              'You have clicked the button this many times:',
-              style: Theme.of(context).textTheme.display1,
+            Container(
+              height: MediaQuery.of(context).size.height * 0.05,
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
+            Expanded(
+              flex: 17,
+              child: Image.asset(
+                'assets/graphics/whitelogonobg.png',
+                width: MediaQuery.of(context).size.width * 0.9,
+              ),
+            ),
+            Expanded(
+              flex: 83,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    callsign,
+                    style: Theme.of(context).textTheme.headline,
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  _buildCarousel(context, 0),
+                ],
+              ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
