@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertestapp/LoadoutForm.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'loadoutInfo.dart';
@@ -19,14 +20,6 @@ class MyApp extends StatelessWidget {
       title: 'OutCOD',
       theme: ThemeData(
         // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blueGrey,
         canvasColor: Color(0xff555555),
         fontFamily: 'Bebas Neue',
@@ -35,8 +28,8 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blueGrey),
         ),
         textTheme: TextTheme(
-          body1: TextStyle(fontFamily: 'Bebas Neue', color: Color(0xffffffff)),
-          body2: TextStyle(fontFamily: 'Bebas Neue', color: Color(0xffaaaaaa)),
+          body1:    TextStyle(fontFamily: 'Bebas Neue', color: Color(0xffffffff)),
+          body2:    TextStyle(fontFamily: 'Bebas Neue', color: Color(0xffaaaaaa)),
           display1: TextStyle(fontFamily: 'Bebas Neue', color: Color(0xffffffff), fontSize: 26),
           display2: TextStyle(fontFamily: 'Bebas Neue', color: Color(0xffaaaaaa), fontSize: 20),
           display3: TextStyle(fontFamily: 'Bebas Neue', color: Color(0xffffffff), fontSize: 22),
@@ -74,6 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List cardRole = new List();
   List cardText = new List();
   int numCards = 2;
+  Offset lastTap;
 
 
   // Funcs go here?
@@ -89,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     loadData();
 
-    setState(() {    });
+    setState(() {});
   }
 
   void loadData() async {
@@ -97,6 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (data.containsKey('callsign')) {
       callsign = data.getString('callsign');
     } else {
+      Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => EnterCallsign()));
     }
 
@@ -124,6 +119,28 @@ class _MyHomePageState extends State<MyHomePage> {
     numCards++;
   }
 
+  Future<bool> _showDelOneDialog() async {
+    return await showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: new Text("Warning!"),
+            content: new Text("Are you sure you want to remove this loadout?"),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text("Yes"),
+                onPressed: () { Navigator.pop(context, true); },
+              ),
+              new FlatButton(
+                child: new Text("Cancel"),
+                onPressed: () { Navigator.pop(context, false); },
+              ),
+            ],
+          );
+        }
+    );
+  }
+
   void _showDelAllDialog() {
     showDialog(
       context: context,
@@ -135,6 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
             new FlatButton(
               child: new Text("Yes"),
               onPressed: () { removeAllCards();
+              Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => EnterCallsign())); },
             ),
             new FlatButton(
@@ -145,6 +163,37 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       }
     );
+  }
+
+  void showEditDeleteMenu(int index) async {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    RelativeRect boxPos = RelativeRect.fromLTRB(lastTap.dx, lastTap.dy, screenWidth - lastTap.dx, screenHeight - lastTap.dy);
+    int result = await showMenu<int>(
+      context: context,
+      position: boxPos,
+      items: [
+        PopupMenuItem<int> (
+          value: 1,
+          child: Text('Edit'),
+        ),
+        PopupMenuItem<int> (
+          value: 2,
+          child: Text('Delete'),
+        )
+      ]
+    );
+
+    if (result == 1) {
+      // go to card form filled out
+      List result = await Navigator.push(context, MaterialPageRoute(builder: (context) => LoadoutForm(index, isNew: false)));
+      if (result.length > 0 && result[0]) {
+        updateLoadout(result[1], result[2], index);
+      }
+    } else if (result == 2) {
+      bool shouldDelItem = await _showDelOneDialog();
+      // Move everything after item left 1, delete last
+    }
   }
 
   void removeAllCards() async {
@@ -182,11 +231,6 @@ class _MyHomePageState extends State<MyHomePage> {
       }
       setState(() {});
     } else {
-      // go to card form filled out
-      List result = await Navigator.push(context, MaterialPageRoute(builder: (context) => LoadoutForm(index, isNew: false)));
-      if (result.length > 0 && result[0]) {
-        updateLoadout(result[1], result[2], index);
-      }
     }
   }
 
@@ -238,6 +282,14 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: const Color(0xff3b3838),
       body: GestureDetector (
         onTap: () { tappedCard(itemIndex); },
+        onTapDown: (TapDownDetails details) {
+          lastTap = details.globalPosition;
+        },
+        onLongPress: () {
+          HapticFeedback.vibrate();
+          if (itemIndex < numCards - 2)
+            showEditDeleteMenu(itemIndex);
+        },
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0),
           child: Container(
@@ -301,6 +353,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   Text(
                     callsign,
                     style: Theme.of(context).textTheme.headline,
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.05,
+                  ),
+                  Text(
+                    "Select Loadout",
+                    style: Theme.of(context).textTheme.display2,
                   ),
                   Container(
                     height: MediaQuery.of(context).size.height * 0.02,
