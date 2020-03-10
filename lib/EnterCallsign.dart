@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
-import 'loadoutInfo.dart';
 
 class EnterCallsign extends StatefulWidget {
   @override
