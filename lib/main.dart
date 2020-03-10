@@ -187,7 +187,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (result == 1) {
       // go to card form filled out
       List result = await Navigator.push(context, MaterialPageRoute(builder: (context) => LoadoutForm(index, isNew: false)));
-      if (result.length > 0 && result[0]) {
+      if (result != null && result.length > 0 && result[0]) {
         updateLoadout(result[1], result[2], index);
       }
     } else if (result == 2) {
@@ -226,7 +226,7 @@ class _MyHomePageState extends State<MyHomePage> {
     } else if (index == numCards - 2) {
       //go to card form empty
       List result = await Navigator.push(context, MaterialPageRoute(builder: (context) => LoadoutForm(index, isNew: true)));
-      if (result.length > 0 && result[0]) {
+      if (result != null && result.length > 0 && result[0]) {
         newLoadout(result[1], result[2]);
       }
       setState(() {});
